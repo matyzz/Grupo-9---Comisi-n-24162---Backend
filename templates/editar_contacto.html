@@ -6,19 +6,25 @@
     <meta name="description" content="Página del Grupo #8, proyecto de CodoaCodo.">
     <title>Contacto</title>
     <!-- Enlace al archivo CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- favicon -->
-    <link rel="icon" href="/config/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <!-- Enlace a Boxicons para los iconos -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- Fonts google -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap">
+    <style>
+        body {
+            background: url('{{ url_for('static', filename='img/background.jpg') }}') no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
-
 <body>
     <header class="header">
         <!-- Logo de la página -->
-        <a href="index.html" class="logo">Magro</a>
+        <a href="{{ url_for('index') }}" class="logo">Magro</a>
         <!-- Checkbox para el menú responsive -->
         <input type="checkbox" id="check">
         <label for="check" class="iconos">
@@ -27,60 +33,52 @@
         </label>
         <!-- Barra de navegación -->
         <nav class="navbar">
-            <a href="index.html" style="--i:0;">Inicio</a>
-            <a href="informacion.html" style="--i:1;">Información</a>
-            <a href="galeria.html" style="--i:2;">Galeria</a>
-            <a href="servicios.html" style="--i:3;">Servicios</a>
-            <a href="contacto.html" style="--i:4;">Contacto</a>
+            <a href="{{ url_for('index') }}" style="--i:0;">Inicio</a>
+            <a href="{{ url_for('informacion') }}" style="--i:1;">Información</a>
+            <a href="{{ url_for('galeria') }}" style="--i:2;">Galeria</a>
+            <a href="{{ url_for('servicios') }}" style="--i:3;">Servicios</a>
+            <a href="{{ url_for('contacto') }}" style="--i:4;">Contacto</a>
         </nav>
     </header>
     <main>
-        <!-- Sección principal del contenido -->
-        <form class="form" id="contactForm" action="#" method="POST" enctype="multipart/form-data">
-            <h2 class="form_titulo">Contacto</h2>
-            <p class="form_texto">Nos pondremos en contacto con usted!</p>
-
-            <!-- Elemento para mostrar mensajes de error -->
+        <form class="form" id="contactForm" action="/update/{{contacto.0}}" method="POST" enctype="multipart/form-data">
+            <h2 class="form_titulo">Editar Contacto</h2>
+            <p class="form_texto">Edite el contacto!</p>
             <div id="error-message" class="error-message" style="display: none; color: red; margin-bottom: 10px;"></div>
-
             <div class="form_contenedor">
                 <div class="form_grupo">
-                    <input type="text" id="nombre" class="form_input" name="nombre" placeholder=" " required>
+                    <input type="text" id="nombre" class="form_input" name="nombre" placeholder=" " value="{{ contacto.1 }}" required>
                     <label for="nombre" class="form_label">Nombre:</label>
                     <span class="form_line"></span>
                 </div>
                 <div class="form_grupo">
-                    <input type="email" id="correo" class="form_input" name="correo" placeholder=" " required>
+                    <input type="email" id="correo" class="form_input" name="correo" placeholder=" " value="{{ contacto.2 }}" required>
                     <label for="correo" class="form_label">Correo:</label>
                     <span class="form_line"></span>
                 </div>
                 <div class="form_grupo">
-                    <input type="tel" id="telefono" class="form_input" name="telefono" placeholder=" " required>
+                    <input type="tel" id="telefono" class="form_input" name="telefono" placeholder=" " value="{{ contacto.3 }}" required>
                     <label for="telefono" class="form_label">Teléfono:</label>
                     <span class="form_line"></span>
                 </div>
                 <div class="form_grupo">
-                    <input type="text" id="domicilio" class="form_input" name="domicilio" placeholder=" " required>
+                    <input type="text" id="domicilio" class="form_input" name="domicilio" placeholder=" " value="{{ contacto.4 }}" required>
                     <label for="domicilio" class="form_label">Domicilio:</label>
                     <span class="form_line"></span>
                 </div>
-
-                <div class="form_grupo">
-                    <input type="file" id="archivo" name="archivo" class="form_input">
-                    <label for="archivo" class="form_label">Cargar Imagen:</label>
-                </div>
-
-                <div class="form_grupo form_grupo_checkbox">
-                    <input type="checkbox" id="suscripcion" name="suscripcion" class="form_input_checkbox">
-                    <label for="suscripcion" class="form_label_checkbox">Suscribirse a nuestro boletín</label>
-                </div>
-
                 <input type="submit" class="form_enviar" value="Enviar">
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
         </form>       
     </main>
 
-    <!-- Enlace al archivo JS -->
-    <script src="/config/js/validacion-form.js"></script>
 </body>
 </html>

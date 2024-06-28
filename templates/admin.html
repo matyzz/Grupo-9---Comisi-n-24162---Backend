@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Página del Grupo #8, proyecto de CodoaCodo.">
+    <title>Grupo #8</title>
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <!-- Enlace a Boxicons para los iconos -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Fonts google -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap">
+
+    <style>
+        body {
+            background: url('{{ url_for('static', filename='img/background.jpg') }}') no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <!-- Logo de la página -->
+        <a href="{{ url_for('index') }}" class="logo">Magro</a>
+        <!-- Checkbox para el menú responsive -->
+        <input type="checkbox" id="check">
+        <label for="check" class="iconos">
+            <i class='bx bx-menu' id="icono-menu"></i>
+            <i class='bx bx-x' id="icono-cerrar"></i>
+        </label>
+        <!-- Barra de navegación -->
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}" style="--i:0;">Inicio</a>
+            <a href="{{ url_for('informacion') }}" style="--i:1;">Información</a>
+            <a href="{{ url_for('galeria') }}" style="--i:2;">Galeria</a>
+            <a href="{{ url_for('servicios') }}" style="--i:3;">Servicios</a>
+            <a href="{{ url_for('contacto') }}" style="--i:4;">Contacto</a>
+        </nav>
+    </header>
+    <main>
+        <div class="content-container">
+            <table>
+                <thead>
+                    <tr>
+                        <td>Nombre</td>
+                        <td>Correo</td>
+                        <td>Telefono</td>
+                        <td>Domicilio</td>
+                        <td>Suscripcion</td>
+                        <td>Operaciones</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contacto in contactos %}
+                        <tr>
+                            <td>{{ contacto.1 }}</td>
+                            <td>{{ contacto.2 }}</td>
+                            <td>{{ contacto.3 }}</td>
+                            <td>{{ contacto.4 }}</td>
+                            <td>{{ contacto.5 }}</td>
+                            <td>
+                                <a href="/edit/{{contacto.0}}">Editar</a>
+                                <a href="/delete/{{contacto.0}}" class="borrar">Eliminar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <form method="POST" action="{{ url_for('logout') }}">
+                <input type="submit" class="form_enviar" value="Logout">
+            </form>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+    </main>    
+      <script src="{{ url_for('static', filename='js/borrar.js') }}"></script>
+</body>
+</html>

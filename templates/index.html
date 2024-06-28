@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Página del Grupo #8, proyecto de CodoaCodo.">
+    <title>Grupo #8</title>
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <!-- Enlace a Boxicons para los iconos -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Fonts google -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap">
+
+    <style>
+        body {
+            background: url('{{ url_for('static', filename='img/background.jpg') }}') no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <!-- Logo de la página -->
+        <a href="{{ url_for('index') }}" class="logo">Magro</a>
+        <!-- Checkbox para el menú responsive -->
+        <input type="checkbox" id="check">
+        <label for="check" class="iconos">
+            <i class='bx bx-menu' id="icono-menu"></i>
+            <i class='bx bx-x' id="icono-cerrar"></i>
+        </label>
+        <!-- Barra de navegación -->
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}" style="--i:0;">Inicio</a>
+            <a href="{{ url_for('informacion') }}" style="--i:1;">Información</a>
+            <a href="{{ url_for('galeria') }}" style="--i:2;">Galeria</a>
+            <a href="{{ url_for('servicios') }}" style="--i:3;">Servicios</a>
+            <a href="{{ url_for('contacto') }}" style="--i:4;">Contacto</a>
+        </nav>
+    </header>
+    <main>
+        <form class="form" id="loginForm" action="{{ url_for('login') }}" method="POST">
+            <h2 class="form_titulo">Login</h2>
+            <p class="form_texto">Ingrese sus datos!</p>
+            <div id="error-message" class="error-message" style="display: none; color: red; margin-bottom: 10px;"></div>
+            <div class="form_contenedor">
+                <div class="form_grupo">
+                    <input type="text" id="usuario" class="form_input" name="usuario" placeholder=" " required>
+                    <label for="usuario" class="form_label">Usuario:</label>
+                    <span class="form_line"></span>
+                </div>
+                <div class="form_grupo">
+                    <input type="password" id="pass" class="form_input" name="pass" placeholder=" " required>
+                    <label for="pass" class="form_label">Contraseña:</label>
+                    <span class="form_line"></span>
+                </div>
+                <input type="submit" class="form_enviar" value="Login">
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </form>
+    </main>
+</body>
+</html>

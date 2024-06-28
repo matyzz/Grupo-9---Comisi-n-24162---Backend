@@ -110,19 +110,21 @@ def login_required(f):
 @app.route('/admin')
 @login_required
 def admin():
-    cur = mysql.connect.cursor()
+    cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM contacto')
     data = cur.fetchall()
-    return render_template('admin.html', contactos = data)
+    cur.close()
+    return render_template('admin.html', contactos=data)
 
 # Boton editar con requerimiento de login
 @app.route('/edit/<id>')
 @login_required
 def get_contacto(id):
-    cur =  mysql.connection.cursor()
-    cur.execute('SELECT * FROM contacto WHERE id = %s', (id))
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM contacto WHERE id = %s', (id,))
     data = cur.fetchall()
-    return render_template('editar_contacto.html', contacto = data[0])
+    cur.close()
+    return render_template('editar_contacto.html', contacto=data[0])
 
 # Boton Actualizar datos con requerimiento de login
 @app.route('/update/<id>', methods=['POST'])
@@ -162,10 +164,16 @@ def actualizar_contacto(id):
 @app.route('/delete/<string:id>')
 @login_required
 def eliminar_contacto(id):
-    cur = mysql.connection.cursor()
-    cur.execute('DELETE FROM contacto WHERE id = {0}' .format(id))
-    mysql.connection.commit()
-    flash('Contacto enviado satisfactoriamente', 'success')
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute('DELETE FROM contacto WHERE id = %s', (id,))
+        mysql.connection.commit()
+        flash('Contacto eliminado satisfactoriamente', 'success')
+    except Exception as e:
+        mysql.connection.rollback()
+        flash(f'Error al eliminar el contacto: {e}', 'error')
+    finally:
+        cur.close()
     return redirect(url_for('admin'))
 
 # Cerrar sesion

@@ -1,9 +1,10 @@
-document.getElementById('contactForm').addEventListener('submit', function(event) {
+document.getElementById('submitBtn').addEventListener('click', function(event) {
     // Previene el envío del formulario por defecto
     event.preventDefault();
 
     // Limpia los mensajes de error anteriores
     clearErrorMessages();
+    clearSuccessMessages();
 
     var isValid = true;
     var nombre = document.getElementById('nombre').value.trim();
@@ -49,7 +50,23 @@ document.getElementById('contactForm').addEventListener('submit', function(event
 
     // Si todas las validaciones pasan, se envía el formulario
     if (isValid) {
-        this.submit();
+        var formData = new FormData(document.getElementById('contactForm'));
+
+        fetch('/contacto', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showSuccess(data.message);
+            } else {
+                showError(data.message);
+            }
+        })
+        .catch(error => {
+            showError('Ocurrió un error al enviar el formulario. Por favor, inténtelo de nuevo.');
+        });
     }
 });
 
@@ -59,8 +76,20 @@ function showError(message) {
     errorMessageElement.style.display = 'block';
 }
 
+function showSuccess(message) {
+    var successMessageElement = document.getElementById('success-message');
+    successMessageElement.innerText = message;
+    successMessageElement.style.display = 'block';
+}
+
 function clearErrorMessages() {
     var errorMessageElement = document.getElementById('error-message');
     errorMessageElement.innerText = '';
     errorMessageElement.style.display = 'none';
+}
+
+function clearSuccessMessages() {
+    var successMessageElement = document.getElementById('success-message');
+    successMessageElement.innerText = '';
+    successMessageElement.style.display = 'none';
 }

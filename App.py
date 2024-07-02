@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_mysqldb import MySQL, MySQLdb
 import os
 
@@ -48,8 +48,7 @@ def contacto():
             suscripcion = 'suscrito' if 'suscripcion' in request.form else 'no suscrito'
 
             if not nombre or not correo or not telefono or not domicilio:
-                flash('Por favor, completa todos los campos', 'error')
-                return redirect(url_for('contacto'))
+                return jsonify({'success': False, 'message': 'Por favor, completa todos los campos'})
 
             archivo = request.files['archivo']
             if archivo and archivo.filename != '':
@@ -61,13 +60,12 @@ def contacto():
                 VALUES (%s, %s, %s, %s, %s)
             ''', (nombre, correo, telefono, domicilio, suscripcion))
             mysql.connection.commit()
-            flash('Contacto enviado satisfactoriamente', 'success')
+            return jsonify({'success': True, 'message': 'Contacto enviado satisfactoriamente'})
         except Exception as e:
             mysql.connection.rollback()
-            flash(f'Error al enviar el contacto: {e}', 'error')
+            return jsonify({'success': False, 'message': f'Error al enviar el contacto: {e}'})
         finally:
             cur.close()
-        return redirect(url_for('contacto'))
     return render_template('contacto.html')
 
 # Login
